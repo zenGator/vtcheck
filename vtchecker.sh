@@ -24,7 +24,7 @@ do
             rawAns=`curl --request POST --url 'https://www.virustotal.com/vtapi/v2/file/report' -d apikey=${VT_API_KEY} -d 'resource='${myHash} 2> /dev/null `
             if [[ "$rawAns" = ""  ]]
                 then
-                    sleep 4
+                    sleep 16
             fi
         done
     
