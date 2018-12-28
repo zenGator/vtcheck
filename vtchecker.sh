@@ -92,7 +92,8 @@ do
 done
 printf ' %.0s' {1..100}
 printf '\r'
-printf 'No records found for the following hashes:\n%s\n' "${no_entries[@]}"
+printf 'No records found for the following hashes:\n' "
+printf '\t%s\n' ${no_entries[@]}"
 printf 'Hit found for the following hashes:\n' 
 printf '\t%s\n' "${!hits[@]}"
 #export param
