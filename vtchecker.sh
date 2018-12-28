@@ -3,7 +3,7 @@ c=0
 hashes=${#@}
 unset no_entries
 unset hits
-declare -A no_entries
+no_entries=()
 declare -A hits
 
 for myHash in $@
@@ -11,7 +11,7 @@ do
     unset rawAns
     unset param
     declare -A param
-    printf "%s:" $myHash
+    printf "%s (%d/%d)" $myHash $((c+1)) $hashes
     printf ' %.0s' {1..100}
     printf '\n'
     c=$((c+1))
@@ -76,9 +76,10 @@ do
     
     
     #printf "raw: %s" "$rawAns"
+
     if [[ $c -le $hashes ]]
         then 
-        if [[ $c -gt 4 ]]
+        if [[ $c -ge 4 ]]
             then 
                 printf "pausing for rate limit"
                 for ((x=0;x<16;x++))
@@ -92,5 +93,6 @@ done
 printf ' %.0s' {1..100}
 printf '\r'
 printf 'No records found for the following hashes:\n%s\n' "${no_entries[@]}"
-printf 'Hits found for the following hashes:\n%s\n' "${!hits[@]}"
+printf 'Hit found for the following hashes:\n' 
+printf '\t%s\n' "${!hits[@]}"
 #export param
