@@ -21,4 +21,7 @@ headers = {
 params = {'apikey': os.environ['VT_API_KEY'], 'resource':'[md5hash]'}
 response = requests.get('https://www.virustotal.com/vtapi/v2/file/report',  params=params, headers=headers)
 json_response = response.json()
-show with:  json_response
+#show with:  json_response
+
+# Access individual elements with: json_response['sha1']
+
