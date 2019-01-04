@@ -2,6 +2,7 @@
 use API to test hashes
 
 REFERENCE:
+====================
 Bad request (really bad):
 	[]
 
