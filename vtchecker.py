@@ -25,6 +25,7 @@ headers = {
   "Accept-Encoding": "gzip, deflate",
   "User-Agent" : "zGvtChecker"
   }
+VT_REPORT_URL='https://www.virustotal.com/vtapi/v2/file/report'
 c=0
 #params = {'apikey': os.environ['VT_API_KEY'], 'resource':'[md5hash]'}
 
@@ -34,20 +35,26 @@ for h in sys.argv[1:]:
     if re.search(r"\b[0-9a-f]{32}\b", h, re.IGNORECASE):  #ensure input is a valid hash value
         print("checking on %s . . . " % h)
         params = {'apikey': os.environ['VT_API_KEY'], 'resource':h}
-        response = requests.get('https://www.virustotal.com/vtapi/v2/file/report',  params=params, headers=headers)
+        response = requests.get(VT_REPORT_URL,  params=params, headers=headers)
         if c > 4:
             print ("Rate limit.  Pausing for 16 seconds.  Please be patient . . . . \r", end='')
             time.sleep(16)
-            response = requests.get('https://www.virustotal.com/vtapi/v2/file/report',  params=params, headers=headers)
+            response = requests.get(VT_REPORT_URL,  params=params, headers=headers)
         while response.status_code==204:
 #ToDo:  add countdown timer here; 1-minute timeout
             print ("Rate limit.  Pausing a bit longer.  Please be patient . . . . \r", end='')
             time.sleep(30)
-            response = requests.get('https://www.virustotal.com/vtapi/v2/file/report',  params=params, headers=headers)
+            response = requests.get(VT_REPORT_URL,  params=params, headers=headers)
             
 #        print (response)
+        if response.status_code==404:
+                        print ('%s\r' % (" " * 80), end='')
+                        print ('major error:  404 returned')
+                        quit()
         json_response = response.json()
     #       print("\tsha is %s" % json_response['sha1'])
+    #       now, we can see a particular scan:
+    #           json_response['scans']['Fortinet']
     #ToDo:
         '''ToDo: test whether any response came back.  A really bad request will engender a simple "[]"; otherwise we should get a json object with, at a minimum:      
             response_code
@@ -81,4 +88,3 @@ print ('Items found to be malicious: %d' % len(posObjects))
 print ('Items found to be benign: %d' % len(negObjects))
 print ('No records found for %d items' % len(unkObjects))
 # Access individual elements with: json_response['sha1']
-
