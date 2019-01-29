@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # python3
+# https://github.com/zenGator/vtcheck/edit/master/vtchecker.py
 # VT_API_KEY set in .bashrc:  export VT_API_KEY='blahblahblah'
 # 
 import os
