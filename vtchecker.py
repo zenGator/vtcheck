@@ -26,27 +26,29 @@ headers = {
   "User-Agent" : "zGvtChecker"
   }
 VT_REPORT_URL='https://www.virustotal.com/vtapi/v2/file/report'
-c=0
+c=0     #count the number of checks we make; after number 4, we wait a bit
 #params = {'apikey': os.environ['VT_API_KEY'], 'resource':'[md5hash]'}
 
 for h in sys.argv[1:]:
     c+=1
-#    print (re.search(r"[0-9a-f]{32}", h))
     if re.search(r"\b[0-9a-f]{32}\b", h, re.IGNORECASE):  #ensure input is a valid hash value
         print("checking on %s . . . " % h)
         params = {'apikey': os.environ['VT_API_KEY'], 'resource':h}
         response = requests.get(VT_REPORT_URL,  params=params, headers=headers)
-        if c > 4:
-            print ("Rate limit.  Pausing for 16 seconds.  Please be patient . . . . \r", end='')
+        if c==5:
+            print ("Rate limit.  Pausing a bit.  Please be patient . . . . \r", end='')
+            time.sleep(45)
+        if c > 5:
+            print ("Waiting for 16 seconds between each response.  Please be patient . . . . \r", end='')
             time.sleep(16)
             response = requests.get(VT_REPORT_URL,  params=params, headers=headers)
         while response.status_code==204:
 #ToDo:  add countdown timer here; 1-minute timeout
-            print ("Rate limit.  Pausing a bit.  Please be patient . . . . \r", end='')
-            time.sleep(30)
+            print ('%s\r' % (" " * 80), end='')
+            print ("Rate limit.  Pausing a bit longer.  Please be patient . . . . ")
+            time.sleep(10)
             response = requests.get(VT_REPORT_URL,  params=params, headers=headers)
             
-#        print (response)
         if response.status_code==404:
                         print ('%s\r' % (" " * 80), end='')
                         print ('major error:  404 returned')
@@ -65,7 +67,6 @@ for h in sys.argv[1:]:
             # we have either submitted a bad request (but this should have been filtered with the test for a valid has at the beginning of the for loop) or there is no record (verbose_msg =~ "The requested resource is not among the finished, queued or pending scans"
             unkObjects.append(h)
         else:
-    #ToDo:  drop the [pos/neg]Hash hashes in favor of the [pos/neg]Objects hashes
             print ('%d of %d scans identified this as malicious' % (json_response['positives'], json_response['total']))
             if json_response['positives']:
                 posHash[h]=json_response['positives']
@@ -87,4 +88,4 @@ for obj in negObjects:
 print ('\nNo records found for %d items' % len(unkObjects))
 for obj in unkObjects:
     print ('\t%s' % obj)
-    
+
