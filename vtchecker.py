@@ -42,7 +42,7 @@ for h in sys.argv[1:]:
             response = requests.get(VT_REPORT_URL,  params=params, headers=headers)
         while response.status_code==204:
 #ToDo:  add countdown timer here; 1-minute timeout
-            print ("Rate limit.  Pausing a bit longer.  Please be patient . . . . \r", end='')
+            print ("Rate limit.  Pausing a bit.  Please be patient . . . . \r", end='')
             time.sleep(30)
             response = requests.get(VT_REPORT_URL,  params=params, headers=headers)
             
@@ -55,14 +55,7 @@ for h in sys.argv[1:]:
     #       print("\tsha is %s" % json_response['sha1'])
     #       now, we can see a particular scan:
     #           json_response['scans']['Fortinet']
-    #ToDo:
-        '''ToDo: test whether any response came back.  A really bad request will engender a simple "[]"; otherwise we should get a json object with, at a minimum:      
-            response_code
-            resource
-            verbose_msg
-            
-            alternatively, test response.status_code
-        '''
+
         myPpty='response_code'
         myResponse=json_response[myPpty]
         print ('%s\r' % (" " * 80), end='')
@@ -85,6 +78,15 @@ for h in sys.argv[1:]:
 #ToDo:  print summary:  posHash, negHash
 print ('Lookups complete.  Summary:')
 print ('Items found to be malicious: %d' % len(posObjects))
-print ('Items found to be benign: %d' % len(negObjects))
-print ('No records found for %d items' % len(unkObjects))
+for obj in posObjects:
+    print ('\t%s' % obj)
+print ('\nItems found to be benign: %d' % len(negObjects))
+for obj in negObjects:
+    print ('\t%s' % obj)
+print ('\nNo records found for %d items' % len(unkObjects))
+for obj in unkObjects:
+    print ('\t%s' % obj)
+
 # Access individual elements with: json_response['sha1']
+
+# ToDo:  print list of hashes:  mal, benign, unfound
