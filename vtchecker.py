@@ -75,18 +75,16 @@ for h in sys.argv[1:]:
                 negObjects[h]=json_response
     else:
             print ('>%s< is not a valid MD5 hash' % h)
-#ToDo:  print summary:  posHash, negHash
+# Access individual elements with: json_response['sha1']
+# or in below loops:  posObjects[obj]['sha256'])
 print ('Lookups complete.  Summary:')
 print ('Items found to be malicious: %d' % len(posObjects))
 for obj in posObjects:
-    print ('\t%s' % obj)
+    print ('\t%s (%d/%d)' % (obj, posObjects[obj]['positives'], posObjects[obj]['total']))
 print ('\nItems found to be benign: %d' % len(negObjects))
 for obj in negObjects:
     print ('\t%s' % obj)
 print ('\nNo records found for %d items' % len(unkObjects))
 for obj in unkObjects:
     print ('\t%s' % obj)
-
-# Access individual elements with: json_response['sha1']
-
-# ToDo:  print list of hashes:  mal, benign, unfound
+    
